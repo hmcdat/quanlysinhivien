@@ -1,13 +1,10 @@
 package com.hmcdat.quanlysinhivien.models;
 
-import lombok.Data;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "classes")
-@Data
 public class Class implements Serializable {
 
     @Id

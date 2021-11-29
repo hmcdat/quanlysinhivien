@@ -1,13 +1,10 @@
 package com.hmcdat.quanlysinhivien.models;
 
-import lombok.Data;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "teachers")
-@Data
 public class Teacher implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

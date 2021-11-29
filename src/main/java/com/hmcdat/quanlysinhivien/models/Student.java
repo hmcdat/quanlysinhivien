@@ -1,15 +1,10 @@
 package com.hmcdat.quanlysinhivien.models;
 
-
-import lombok.Cleanup;
-import lombok.Data;
-
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @Table(name = "students")
-@Data
 public class Student implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +16,7 @@ public class Student implements Serializable {
     @Column(name = "full_name")
     private String fullName;
 
-    @Column(name = "full_name")
+    @Column(name = "gender")
     private boolean gender;
 
     @Column(name = "dob")
