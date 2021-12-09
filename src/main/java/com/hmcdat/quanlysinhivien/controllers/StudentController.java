@@ -99,9 +99,4 @@ public class StudentController  {
         }
     }
 
-    @PostMapping("/{id}/editScore")
-    public ResponseEntity<Object> editScore(@PathVariable long id, @RequestBody ScoreDto data) {
-        //StudentModel student
-        return new ResponseEntity<Object>(null);
-    }
 }

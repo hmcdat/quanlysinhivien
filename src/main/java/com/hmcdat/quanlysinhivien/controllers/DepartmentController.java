@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/departments")
 public class DepartmentController {
     @Autowired
     DepartmentRepository departmentRepository;
@@ -27,8 +27,14 @@ public class DepartmentController {
     @PostMapping("/new")
     public ResponseEntity<Object> createNewDepartment(@RequestBody DepartmentModel departmentModel) {
         try {
-            return ResponseHandler.generateResponse("Success", HttpStatus.OK, departmentRepository.save(departmentModel));
+            if (departmentRepository.findByManagerId(departmentModel.getManagerId()) != null) {
+                return ResponseHandler.generateResponse("This teacher is a manager of another department", HttpStatus.BAD_REQUEST, null);
+            }
 
+            if (departmentRepository.findByViceManagerId(departmentModel.getViceManagerId()) != null) {
+                return ResponseHandler.generateResponse("This teacher is a vice manager of another department", HttpStatus.BAD_REQUEST, null);
+            }
+            return ResponseHandler.generateResponse("Success", HttpStatus.OK, departmentRepository.save(departmentModel));
         } catch (Exception e) {
             return ResponseHandler.generateResponse("Bad request", HttpStatus.BAD_REQUEST, null);
         }
@@ -36,23 +42,23 @@ public class DepartmentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getDepartment(@PathVariable long id) {
-        DepartmentModel department = departmentRepository.getById(id);
-        if (department != null) {
-            return ResponseHandler.generateResponse("Success", HttpStatus.OK, department);
-        } else {
+        DepartmentModel department = departmentRepository.findById(id);
+        if (department == null) {
             return ResponseHandler.generateResponse("Not found", HttpStatus.NOT_FOUND, null);
+        } else {
+            return ResponseHandler.generateResponse("Success", HttpStatus.OK, department);
         }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> editDepartment(@PathVariable long id, DepartmentModel data) {
+    public ResponseEntity<Object> editDepartment(@PathVariable long id, @RequestBody DepartmentModel data) {
         try {
             DepartmentModel department = departmentRepository.getById(id);
             if (department != null) {
+                department.setName(data.getName());
                 department.setPhone(data.getPhone());
                 department.setAddress(data.getAddress());
-                department.setName(data.getName());
-                return ResponseHandler.generateResponse("Success", HttpStatus.NOT_FOUND, departmentRepository.save(department));
+                return ResponseHandler.generateResponse("Success", HttpStatus.OK, departmentRepository.save(department));
             } else {
                 return ResponseHandler.generateResponse("Not found", HttpStatus.NOT_FOUND, null);
             }
@@ -64,16 +70,23 @@ public class DepartmentController {
     @PostMapping("/{id}/changeManager")
     public ResponseEntity<Object> changeManager(
             @PathVariable long id,
-            @RequestParam(value = "managerId", required = false) long managerId
+            @RequestBody DepartmentModel data
     ) {
         try {
+            if (data.getManagerId() == 0) {
+                return ResponseHandler.generateResponse("Require managerId", HttpStatus.BAD_REQUEST, null);
+            }
             DepartmentModel department = departmentRepository.getById(id);
             if (department == null) {
                 return ResponseHandler.generateResponse("Department not found", HttpStatus.NOT_FOUND, null);
             }
-            TeacherModel teacher = teacherRepository.getById(managerId);
+            TeacherModel teacher = teacherRepository.getById(data.getManagerId());
             if (teacher == null) {
                 return ResponseHandler.generateResponse("Manager not found", HttpStatus.NOT_FOUND, null);
+            }
+
+            if (departmentRepository.findByManagerId(data.getManagerId()) != null) {
+                return ResponseHandler.generateResponse("This teacher is a manager of another department", HttpStatus.BAD_REQUEST, null);
             }
             department.setManagerId(teacher.getId());
             return ResponseHandler.generateResponse("Success", HttpStatus.OK, departmentRepository.save(department));
@@ -86,16 +99,23 @@ public class DepartmentController {
     @PostMapping("/{id}/changeViceManager")
     public ResponseEntity<Object> changeViceManager(
             @PathVariable long id,
-            @RequestParam(value = "viceManagerId", required = false) long viceManagerId
+           @RequestBody DepartmentModel data
     ) {
         try {
+            if (data.getViceManagerId() == 0) {
+                return ResponseHandler.generateResponse("Require viceManagerId", HttpStatus.BAD_REQUEST, null);
+            }
             DepartmentModel department = departmentRepository.getById(id);
             if (department == null) {
                 return ResponseHandler.generateResponse("Department not found", HttpStatus.NOT_FOUND, null);
             }
-            TeacherModel teacher = teacherRepository.getById(viceManagerId);
+            TeacherModel teacher = teacherRepository.getById(data.getViceManagerId());
             if (teacher == null) {
                 return ResponseHandler.generateResponse("Manager not found", HttpStatus.NOT_FOUND, null);
+            }
+
+            if (departmentRepository.findByViceManagerId(data.getViceManagerId()) != null) {
+                return ResponseHandler.generateResponse("This teacher is a vice manager of another department", HttpStatus.BAD_REQUEST, null);
             }
             department.setViceManagerId(teacher.getId());
             return ResponseHandler.generateResponse("Success", HttpStatus.OK, departmentRepository.save(department));

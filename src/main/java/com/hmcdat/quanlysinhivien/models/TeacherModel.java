@@ -1,5 +1,6 @@
 package com.hmcdat.quanlysinhivien.models;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
 public class TeacherModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(value = AccessLevel.PRIVATE)
     private long id;
 
     @Column(name = "full_name")

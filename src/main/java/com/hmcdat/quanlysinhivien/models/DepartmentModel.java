@@ -1,5 +1,6 @@
 package com.hmcdat.quanlysinhivien.models;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.io.Serializable;
 public class DepartmentModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Setter(value = AccessLevel.NONE)
     private long id;
 
     @Column(name = "name")

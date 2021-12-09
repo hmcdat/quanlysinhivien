@@ -20,8 +20,8 @@ public class StudentDto {
     private String dob;
     private String email;
     private String phone;
-    private int classId;
-    private int departmentId;
+    private long classId;
+    private long departmentId;
     private List<ScoreDto> scores;
 
     public StudentDto(StudentModel student) {

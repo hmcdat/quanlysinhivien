@@ -1,5 +1,6 @@
 package com.hmcdat.quanlysinhivien.models;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,12 +12,14 @@ import java.io.Serializable;
 @Entity
 @Table(name = "subjects")
 public class SubjectModel implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(name = "name")
     private String name;
 
+    @Column(name = "type")
     private int type;
+
 }

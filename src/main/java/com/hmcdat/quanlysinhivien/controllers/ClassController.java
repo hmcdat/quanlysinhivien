@@ -37,6 +37,14 @@ public class ClassController {
     @PostMapping("/new")
     public ResponseEntity<Object> createNewClass(@RequestBody ClassModel newClassModel) {
         try {
+            ClassModel findClass = classRepository.findByName(newClassModel.getName());
+            if (findClass != null) {
+                return ResponseHandler.generateResponse("Class exist", HttpStatus.BAD_REQUEST, null);
+            }
+            ClassModel newClass = new ClassModel();
+            newClass.setName(newClassModel.getName());
+            newClass.setDepartmentId(newClassModel.getDepartmentId());
+            newClass.setManagerId(newClassModel.getManagerId());
             ClassModel returnClassModel = classRepository.save(newClassModel);
             return ResponseHandler.generateResponse("Success", HttpStatus.OK, returnClassModel);
         } catch (Exception e) {
@@ -45,15 +53,21 @@ public class ClassController {
         }
     }
 
-    @PutMapping(value = "/{$id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> editClass(@PathVariable long id, ClassModel data) {
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> editClass(@PathVariable long id, @RequestBody ClassModel data) {
         try {
             ClassModel findClassModel = classRepository.findById(id);
+            ClassModel findClassName = classRepository.findByName(data.getName());
+//            System.out.println(data.getName());
+
+            if (findClassName != null && !findClassModel.getName().equals(findClassName.getName())) {
+                return ResponseHandler.generateResponse("This class name exist!", HttpStatus.BAD_REQUEST, null);
+            }
+
+            findClassModel.setName(data.getName());
             findClassModel.setDepartmentId(data.getDepartmentId());
             findClassModel.setManagerId(data.getManagerId());
-            findClassModel.setName(data.getName());
-            ClassModel saveClassModel = classRepository.save(findClassModel);
-            return ResponseHandler.generateResponse("Success", HttpStatus.OK, saveClassModel);
+            return ResponseHandler.generateResponse("Success", HttpStatus.OK, classRepository.save(findClassModel));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseHandler.generateResponse("Bad request", HttpStatus.BAD_REQUEST, null);
