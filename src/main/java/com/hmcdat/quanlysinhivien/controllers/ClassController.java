@@ -1,7 +1,11 @@
 package com.hmcdat.quanlysinhivien.controllers;
 
+import com.hmcdat.quanlysinhivien.dto.ClassDto;
 import com.hmcdat.quanlysinhivien.models.ClassModel;
 import com.hmcdat.quanlysinhivien.repositories.ClassRepository;
+import com.hmcdat.quanlysinhivien.repositories.DepartmentRepository;
+import com.hmcdat.quanlysinhivien.repositories.StudentRepository;
+import com.hmcdat.quanlysinhivien.repositories.TeacherRepository;
 import com.hmcdat.quanlysinhivien.responses.ResponseHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,15 @@ public class ClassController {
     @Autowired
     private ClassRepository classRepository;
 
+    @Autowired
+    StudentRepository studentRepository;
+
+    @Autowired
+    DepartmentRepository departmentRepository;
+
+    @Autowired
+    TeacherRepository teacherRepository;
+
     @GetMapping("")
     public ResponseEntity<Object> getAllClass() {
         return ResponseHandler.generateResponse("Success", HttpStatus.OK, classRepository.findAll());
@@ -25,7 +38,13 @@ public class ClassController {
         try {
             ClassModel findClassModel = classRepository.findById(id);
             if (findClassModel != null) {
-                return ResponseHandler.generateResponse("Success", HttpStatus.OK, findClassModel);
+                ClassDto classDto = new ClassDto();
+                classDto.setId(findClassModel.getId());
+                classDto.setName(findClassModel.getName());
+                classDto.setDepartment(departmentRepository.findById(findClassModel.getDepartmentId()).getName());
+                classDto.setManager(teacherRepository.findById(findClassModel.getManagerId()).getFullName());
+                classDto.setStudents(studentRepository.findAllByClassId(findClassModel.getId()));
+                return ResponseHandler.generateResponse("Success", HttpStatus.OK, classDto);
             } else {
                 return ResponseHandler.generateResponse("Not found", HttpStatus.NOT_FOUND, null);
             }

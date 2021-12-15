@@ -80,7 +80,7 @@ public class DepartmentController {
             if (department == null) {
                 return ResponseHandler.generateResponse("Department not found", HttpStatus.NOT_FOUND, null);
             }
-            TeacherModel teacher = teacherRepository.getById(data.getManagerId());
+            TeacherModel teacher = teacherRepository.findById(data.getManagerId());
             if (teacher == null) {
                 return ResponseHandler.generateResponse("Manager not found", HttpStatus.NOT_FOUND, null);
             }
@@ -109,7 +109,7 @@ public class DepartmentController {
             if (department == null) {
                 return ResponseHandler.generateResponse("Department not found", HttpStatus.NOT_FOUND, null);
             }
-            TeacherModel teacher = teacherRepository.getById(data.getViceManagerId());
+            TeacherModel teacher = teacherRepository.findById(data.getViceManagerId());
             if (teacher == null) {
                 return ResponseHandler.generateResponse("Manager not found", HttpStatus.NOT_FOUND, null);
             }

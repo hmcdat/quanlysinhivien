@@ -22,7 +22,7 @@ public class ScoreController {
         return ResponseHandler.generateResponse("Success", HttpStatus.OK, scoreRepository.findAll());
     }
 
-    @PostMapping("/{id}/edit")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> editScore(@PathVariable long id, @RequestBody ScoreDto data) {
         try {
             ScoreModel score = scoreRepository.findById(id);
@@ -34,6 +34,17 @@ public class ScoreController {
             score.setSemester(data.getSemester());
             return ResponseHandler.generateResponse("Success", HttpStatus.OK, scoreRepository.save(score));
         } catch (Exception e) {
+            return ResponseHandler.generateResponse("Bad request", HttpStatus.BAD_REQUEST, null);
+        }
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Object> deleteScore(@PathVariable long id) {
+        try {
+            scoreRepository.deleteById(id);
+            return ResponseHandler.generateResponse("Success", HttpStatus.OK, null);
+        } catch (Exception e) {
+            e.printStackTrace();
             return ResponseHandler.generateResponse("Bad request", HttpStatus.BAD_REQUEST, null);
         }
     }

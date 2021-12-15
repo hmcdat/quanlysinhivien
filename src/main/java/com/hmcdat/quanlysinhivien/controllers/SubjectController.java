@@ -23,7 +23,6 @@ public class SubjectController {
     public ResponseEntity<Object> getSubjectInfo(@PathVariable long id) {
         SubjectModel subject = subjectRepository.findById(id);
         if (subject == null) {
-
             return ResponseHandler.generateResponse("Subject not found", HttpStatus.NOT_FOUND, null);
         }
         return ResponseHandler.generateResponse("Success", HttpStatus.OK, subject);
@@ -39,7 +38,7 @@ public class SubjectController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> editSubject(@PathVariable long id, @RequestBody SubjectModel data) {
-        SubjectModel subject = subjectRepository.getById(id);
+        SubjectModel subject = subjectRepository.findById(id);
         if (subject == null) {
             return ResponseHandler.generateResponse("Subject not found", HttpStatus.NOT_FOUND, null);
         }

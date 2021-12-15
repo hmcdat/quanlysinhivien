@@ -6,13 +6,13 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "classes")
 public class ClassModel implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -25,5 +25,4 @@ public class ClassModel implements Serializable {
 
     @Column(name = "manager_id")
     private int managerId;
-
 }

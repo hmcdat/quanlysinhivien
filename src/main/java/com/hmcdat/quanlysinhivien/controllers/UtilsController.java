@@ -38,8 +38,19 @@ public class UtilsController {
     public ResponseEntity<Object> getAllStudentsByClassName(@RequestParam(value = "className") String className) {
         ClassModel findClass = classRepository.findByName(className);
         if (findClass == null) {
-            return ResponseHandler.generateResponse("Class not found", HttpStatus.OK, null);
+            return ResponseHandler.generateResponse("Class not found", HttpStatus.NOT_FOUND, null);
         }
+        List<StudentModel> students = studentRepository.findAllByClassId(findClass.getId());
+        return ResponseHandler.generateResponse("Success", HttpStatus.OK, students);
+    }
+
+    @GetMapping("/getAllStudentsByClassId")
+    public ResponseEntity<Object> getAllStudentsByClassId(@RequestParam(value = "classId") long classId) {
+        ClassModel findClass = classRepository.findById(classId);
+        if (findClass == null) {
+            return ResponseHandler.generateResponse("Class not found", HttpStatus.NOT_FOUND, null);
+        }
+
         List<StudentModel> students = studentRepository.findAllByClassId(findClass.getId());
         return ResponseHandler.generateResponse("Success", HttpStatus.OK, students);
     }
