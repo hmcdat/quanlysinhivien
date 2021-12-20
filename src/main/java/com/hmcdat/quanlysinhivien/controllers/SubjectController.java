@@ -15,7 +15,7 @@ public class SubjectController {
     SubjectRepository subjectRepository;
 
     @GetMapping("")
-    public ResponseEntity<Object> getAllSubjects() {
+    public ResponseEntity getAllSubjects() {
         return ResponseHandler.generateResponse("Success", HttpStatus.OK, subjectRepository.findAll());
     }
 
